@@ -1,39 +1,60 @@
-Get Playwright version: 
+# Playwright Useful Commands and Configuration Examples
 
-npx playwright --version
+This section provides a quick reference for common Playwright commands and configuration snippets.
 
-Update Playwright to the latest version:
+## Common Playwright Commands
 
-npm install -D @playwright/test@latest
-npx playwright install --with-deps # Download new browser binaries
+* **Get Playwright Version:**
+    ```bash
+    npx playwright --version
+    ```
 
-Record Test Code with Codegen: Let Playwright generate test code by interacting with a site: 
+* **Update Playwright to the Latest Version:**
+    ```bash
+    npm install -D @playwright/test@latest
+    npx playwright install --with-deps # Download new browser binaries
+    ```
 
-npx playwright codegen [https://demo.playwright.dev/todomvc](https://demo.playwright.dev/todomvc)
-npx playwright codegen --browser=firefox [https://demo.playwright.dev/todomvc](https://demo.playwright.dev/todomvc)
+* **Record Test Code with Codegen (Generate Test Code by Interaction):**
+    ```bash
+    npx playwright codegen [https://demo.playwright.dev/todomvc](https://demo.playwright.dev/todomvc)
+    npx playwright codegen --browser=firefox [https://demo.playwright.dev/todomvc](https://demo.playwright.dev/todomvc)
+    ```
 
-Run a Specific Test File:
+* **Run a Specific Test File:**
+    ```bash
+    npx playwright test tests/todo.spec.ts
+    ```
 
-npx playwright test tests/todo.spec.ts
+* **Run Tests by Tag:**
+    Define tags using `test.describe`:
+    ```typescript
+    // Example in tests/todo.spec.ts
+    test.describe('@smoke', () => {
+      test('should add a todo item', async ({ page }) => {
+        // ... test code ...
+      });
+    });
+    ```
+    Then run tests with the specified tag:
+    ```bash
+    npx playwright test --grep @smoke
+    ```
 
-Run Tests by Tag: Define tags in test.describe and run:
+## Playwright Configuration Examples
 
-// Example in tests/todo.spec.ts
-test.describe('@smoke', () => {
-  test('should add a todo item', async ({ page }) => {
-    // ... test code ...
-  });
-});
+* **Add Reporters in `playwright.config.ts`:**
+    You can configure various reporters for your test results in your `playwright.config.ts` file:
+    ```typescript
+    // playwright.config.ts
+    reporter: [['html'], ['list'], ['json', { outputFile: 'report.json' }]],
+    ```
 
-npx playwright test --grep @smoke
+## `tsconfig.json` Example (Auto-generated)
 
-Add Reporters in playwright.config.ts
+This is a typical `tsconfig.json` file auto-generated when you set up Playwright with TypeScript, which ensures proper type checking and compilation:
 
-// playwright.config.ts
-reporter: [['html'], ['list'], ['json', { outputFile: 'report.json' }]],
-
-tsconfig.json Example (Auto-generated)
-
+```json
 {
   "compilerOptions": {
     "target": "ESNext",
@@ -50,5 +71,3 @@ tsconfig.json Example (Auto-generated)
   },
   "include": ["tests/**/*.ts"]
 }
-
-
