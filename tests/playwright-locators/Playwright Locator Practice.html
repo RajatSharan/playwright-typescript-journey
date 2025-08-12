@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Playwright Locator Practice</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      background-color: #f0f2f5;
+      color: #333;
+      padding: 20px;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1a1a1a;
+      margin-bottom: 40px;
+    }
+
+    section {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    section:hover {
+      transform: translateY(-5px);
+    }
+
+    h2 {
+      color: #0056b3;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-top: 0;
+    }
+
+    button, a.button, input[type="text"], input[type="password"] {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+    }
+
+    button, a.button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    button:hover, a.button:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+    }
+
+    input[type="text"], input[type="password"] {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      padding: 10px;
+      width: calc(100% - 22px);
+      box-sizing: border-box;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    iframe {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      width: 100%;
+      height: 300px;
+      display: block;
+    }
+
+    img {
+      width: 150px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    /* Additional Specific Styles */
+    .section-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .section-content p {
+        margin: 0;
+    }
+    .alert-message {
+        padding: 15px;
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        border-radius: 8px;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 15px;
+    }
+
+    nav a {
+      color: #0056b3;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        width: 300px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+    .card h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+    .item-list {
+        list-style-type: none;
+        padding: 0;
+    }
+    .item-list li {
+        margin-bottom: 8px;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .product-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      background-color: #fafafa;
+    }
+    .product-card h4 {
+      margin-top: 0;
+      color: #333;
+    }
+    .product-card .price {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #007bff;
+      margin: 10px 0;
+    }
+    .product-card .add-to-cart {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .product-card .add-to-cart:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Playwright Locator Practice Page</h1>
+
+  <section>
+    <h2>1. getByRole</h2>
+    <p>Practice locating elements by their **role**, like a button or a link, using a variety of real-world examples. 🎯</p>
+    
+    <h3>Button and Link</h3>
+    <div class="section-content">
+      <button>Submit</button>
+      <a href="#" class="button">Click Me Link</a>
+    </div>
+
+    <h3>Navigation Links</h3>
+    <p>Use `getByRole('link', { name: '...' })` to find links in a navigation menu.</p>
+    <nav aria-label="Main Navigation">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Products</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+
+    <h3>Alert Message</h3>
+    <p>Use `getByRole('alert')` to find important, dynamic messages on the page.</p>
+    <div class="alert-message" role="alert">
+      <span>Successfully submitted your data!</span>
+    </div>
+  </section>
+  
+  <section>
+    <h2>2. Locator Chaining</h2>
+    <p>Learn to narrow down your search by chaining locators. For example, find a button *inside* a specific div. 🔗</p>
+    
+    <div id="parent">
+      <div class="child">
+        <button>Child Button</button>
+      </div>
+    </div>
+    
+    <hr>
+
+    <h3>Product Listing Example</h3>
+    <p>This is a real-world scenario. Use locator chaining to select the "Add to Cart" button for a **specific product**.</p>
+    <div class="product-grid">
+      <div class="product-card" data-testid="product-1">
+        <h4>Wireless Mouse</h4>
+        <p>Ergonomic design with silent clicks.</p>
+        <span class="price">$25.00</span>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product-card" data-testid="product-2">
+        <h4>Mechanical Keyboard</h4>
+        <p>Tactile keys and RGB backlighting.</p>
+        <span class="price">$120.00</span>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product-card" data-testid="product-3">
+        <h4>Gaming Headset</h4>
+        <p>Immersive sound with noise cancellation.</p>
+        <span class="price">$75.00</span>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+    
+  </section>
+
+  <section>
+    <h2>3. Iframe - Login Page Example</h2>
+    <p>This iframe contains a simple login form. Practice interacting with elements *inside an iframe*, which requires locating the iframe first. Try logging in with: <br> <strong>Username:</strong> <code>testuser</code> <br> <strong>Password:</strong> <code>password123</code></p>
+    <iframe srcdoc="
+      <style>
+        body { font-family: -apple-system, sans-serif; background-color: #f7f7f7; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100%; box-sizing: border-box;}
+        .login-container { max-width: 300px; width: 100%; padding: 25px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h3 { text-align: center; color: #333; margin-top: 0; margin-bottom: 20px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+        input[type='text'], input[type='password'] { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px; font-size: 15px; }
+        input[type='text']:focus, input[type='password']:focus { outline: none; border-color: #007bff; box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); }
+        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px;}
+        button:hover { background-color: #218838; transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+        .message { margin-top: 20px; text-align: center; font-weight: bold; padding: 8px; border-radius: 4px; }
+        .success { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; }
+        .error { color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; }
+      </style>
+      <div class='login-container'>
+        <h3>User Login</h3>
+        <div class='form-group'>
+          <label for='username'>Username</label>
+          <input type='text' id='username' data-testid='login-username-input' />
+        </div>
+        <div class='form-group'>
+          <label for='password'>Password</label>
+          <input type='password' id='password' data-testid='login-password-input' />
+        </div>
+        <button onclick='attemptLogin()' data-testid='login-button'>Log In</button>
+        <div id='message' class='message' data-testid='login-message'></div>
+      </div>
+      <script>
+        function attemptLogin() {
+          const username = document.getElementById('username').value;
+          const password = document.getElementById('password').value;
+          const messageDiv = document.getElementById('message');
+          if (username === 'testuser' && password === 'password123') {
+            messageDiv.textContent = 'Login successful!';
+            messageDiv.className = 'message success';
+          } else {
+            messageDiv.textContent = 'Invalid credentials.';
+            messageDiv.className = 'message error';
+          }
+        }
+      </script>
+    " frameborder="0"></iframe>
+  </section>
+
+  <section>
+    <h2>4. getByLabel</h2>
+    <p>Use `getByLabel` to find input fields associated with a specific label text. 🏷️</p>
+    <label for="main-username">Main Page Username</label>
+    <input type="text" id="main-username" />
+  </section>
+
+  <section>
+    <h2>5. getByPlaceholder</h2>
+    <p>Locate input fields using their placeholder text. 💡</p>
+    <input type="text" placeholder="Enter your email" />
+  </section>
+
+  <section>
+    <h2>6. getByText</h2>
+    <p>Find elements containing specific text content. Practice with both **exact** matches and **regular expressions**.</p>
+    <p>Hello World</p>
+    <p>hello playwright</p>
+    <p>Another paragraph about Playwright.</p>
+  </section>
+
+  <section>
+    <h2>7. Regex Example</h2>
+    <p>Use a regex to find text that matches a pattern, like "Playwright" followed by "Testing". 📝</p>
+    <p>Playwright Testing Rocks!</p>
+    <p>Automated Testing is great.</p>
+  </section>
+
+  <section>
+    <h2>8. Get by Alt Text</h2>
+    <p>Locate image elements using their `alt` attribute. Important for accessibility! 🖼️</p>
+    <img src="https://via.placeholder.com/150/0000FF/FFFFFF?text=Sample+Image" alt="Blue placeholder image with sample text"/>
+  </section>
+
+  <section>
+    <h2>9. Get by Title</h2>
+    <p>Find elements based on their `title` attribute, often used for tooltips. ❓</p>
+    <button title="Save Changes to your profile">Save</button>
+  </section>
+
+  <section>
+    <h2>10. Get by Test ID</h2>
+    <p>The recommended way to locate elements in robust automation frameworks. Use `data-testid` attributes. ✅</p>
+    <button data-testid="delete-btn">Delete Item</button>
+    <span data-testid="status-message">Ready to go!</span>
+  </section>
+
+</body>
+</html>
