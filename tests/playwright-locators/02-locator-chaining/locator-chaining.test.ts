@@ -12,10 +12,9 @@ test('Locator chaining',async({page})=>{
 test('Locator chaining example 2',async({page})=>{
 
     await page.goto('/tests/playwright-locators/Playwright Locator Practice.html')
-    const parent = page.locator('.product-grid')
-    const childelement= parent.locator('.product-card',{hasText:'Mechanical Keyboard'})
-    await childelement.getByRole('button',{name :'Add to Cart'}).click()
-
-
-
+    const parent = page.locator('.product-card',{hasText:'Gaming Headset'})
+    await parent.getByRole('button',{name:'Add to Cart'}).click()
+    const productTitle=parent.locator('h4')
+    await expect(productTitle).toHaveText('Gaming Headset')
+    console.log("Product is getting successfully")
 })
