@@ -349,5 +349,91 @@
     <span data-testid="status-message">Ready to go!</span>
   </section>
 
+  <section id="xpath-css-section">
+    <h2>11. XPath & CSS Selectors</h2>
+    <p>This section is for practicing **XPath** and **CSS Selectors** on a product catalog. Use this to practice absolute vs. relative XPath, `and/or`, parent/child relationships, and sibling locators. 🔍</p>
+    <div class="product-grid">
+      <div class="product-card" id="product-laptop">
+        <h4 class="product-name">Laptop</h4>
+        <p class="product-description">Powerful laptop for everyday use.</p>
+        <span class="product-price price">$1000</span>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product-card" id="product-smartphone">
+        <h4 class="product-name">Smartphone</h4>
+        <p class="product-description">Latest model with advanced features.</p>
+        <span class="product-price price">$600</span>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+      <div class="product-card" id="product-watch">
+        <h4 class="product-name">Smartwatch</h4>
+        <p class="product-description">Track your fitness and receive notifications.</p>
+        <span class="product-price price">$250</span>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="shadow-dom-section">
+    <h2>12. Shadow DOM</h2>
+    <p>This section contains a custom element with an **open** Shadow DOM. Playwright handles open Shadow DOMs automatically.</p>
+    <profile-card id="user-profile"></profile-card>
+  </section>
+
+  <section id="filtering-locators-section">
+    <h2>13. Filtering Locators</h2>
+    <p>Practice filtering locators based on text, child elements, and other conditions.</p>
+    <table class="product-table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-product-id="1">
+                <td>Laptop</td>
+                <td>$1000</td>
+                <td><span class="status-badge status-in-stock">In Stock</span></td>
+            </tr>
+            <tr data-product-id="2">
+                <td>Desk Chair</td>
+                <td>$150</td>
+                <td><span class="status-badge status-out-of-stock">Out of Stock</span></td>
+            </tr>
+            <tr data-product-id="3">
+                <td>Monitor</td>
+                <td>$300</td>
+                <td><span class="status-badge status-in-stock">In Stock</span></td>
+            </tr>
+        </tbody>
+    </table>
+  </section>
+
+  <script>
+    // JavaScript for Shadow DOM Component
+    class ProfileCard extends HTMLElement {
+        constructor() {
+            super();
+            const shadowRoot = this.attachShadow({ mode: 'open' });
+            shadowRoot.innerHTML = `
+                <style>
+                    :host { display: block; border: 1px solid #007bff; padding: 15px; border-radius: 8px; background-color: #e7f3ff; }
+                    h4 { color: #0056b3; margin: 0 0 10px; }
+                    p { margin: 0 0 5px; }
+                    .info { color: #333; }
+                </style>
+                <h4>User Profile</h4>
+                <p>Name: <span id="user-name" class="info">John Doe</span></p>
+                <p>Role: <span id="user-role" class="info">Administrator</span></p>
+                <button id="edit-profile-btn">Edit</button>
+            `;
+        }
+    }
+    customElements.define('profile-card', ProfileCard);
+
+  </script>
+
 </body>
 </html>
