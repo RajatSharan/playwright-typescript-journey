@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Testing Practice App</title>
+    <!-- Inter font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .message-box-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .dropdown-input {
+            width: 100%;
+        }
+        .dropdown-options {
+            display: none;
+            position: absolute;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+        .dropdown-options div {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+        .dropdown-options div:hover {
+            background-color: #f3f4f6;
+        }
+        .page {
+            display: none; /* All pages are hidden by default */
+        }
+        .alert-box {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+            position: relative;
+        }
+        .draggable-item {
+            cursor: grab;
+            user-select: none;
+        }
+        .dropzone {
+            min-height: 100px;
+            border: 2px dashed #d1d5db;
+            background-color: #f9fafb;
+            transition: all 0.2s ease-in-out;
+        }
+        .dropzone.hovered {
+            background-color: #e5e7eb;
+            border-color: #4f46e5;
+        }
+        #scrolling-content {
+            height: 400px;
+            overflow-y: scroll;
+            border: 1px solid #d1d5db;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+
+    <!-- Main Container -->
+    <div class="max-w-6xl mx-auto bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
+
+        <!-- Header -->
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Automation Testing Practice Ground</h1>
+
+        <!-- Navigation Menu -->
+        <nav class="flex flex-wrap justify-center mb-8 gap-2">
+            <button class="nav-button px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ease-in-out bg-blue-600 text-white hover:bg-blue-700" data-page="home">Home</button>
+            <button class="nav-button px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ease-in-out text-gray-700 hover:bg-gray-200" data-page="forms">Forms</button>
+            <button class="nav-button px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ease-in-out text-gray-700 hover:bg-gray-200" data-page="advanced-elements">Advanced Elements</button>
+            <button class="nav-button px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ease-in-out text-gray-700 hover:bg-gray-200" data-page="modals-alerts">Modals & Alerts</button>
+            <button class="nav-button px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ease-in-out text-gray-700 hover:bg-gray-200" data-page="drag-and-drop">Drag & Drop</button>
+            <button class="nav-button px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ease-in-out text-gray-700 hover:bg-gray-200" data-page="scrolling">Scrolling</button>
+        </nav>
+
+        <!-- Page: Home (Data Grid & Clock) -->
+        <div id="home" class="page">
+            <!-- Live Clock Section -->
+            <div class="mb-8 p-4 bg-gray-100 rounded-lg shadow-sm">
+                <p class="text-center text-xl font-semibold text-gray-700">Live Clock: <span id="live-clock" class="font-bold text-blue-600"></span></p>
+            </div>
+            
+            <!-- User Data Grid Section -->
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">User Data Grid</h2>
+            <div class="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-300">
+                <table id="userDataTable" class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onclick="sortTable(0)">
+                                ID
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onclick="sortTable(1)">
+                                Name
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onclick="sortTable(2)">
+                                Email
+                            </th>
+                            <th scope="col" class="relative px-6 py-3">
+                                <span class="sr-only">Actions</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="dataGridBody">
+                        <!-- Data rows will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 flex flex-col sm:flex-row gap-4">
+                <button id="addRowBtn" class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                    Add New User
+                </button>
+            </div>
+        </div>
+
+        <!-- Page: Forms -->
+        <div id="forms" class="page">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Standard Form & Input Fields</h2>
+            <form id="practiceForm" class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-300">
+                <!-- Text Input -->
+                <div>
+                    <label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="John" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                </div>
+                <!-- Email Input -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="john.doe@example.com" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                    <span id="email-validation-message" class="text-sm text-red-600 hidden"></span>
+                </div>
+                <!-- Number Input (Numeric Input) -->
+                <div>
+                    <label for="age" class="block text-sm font-medium text-gray-700">Age (Numeric Input)</label>
+                    <input type="number" id="age" name="age" placeholder="25" min="1" max="120" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                </div>
+                <!-- Dropdown Select -->
+                <div>
+                    <label for="country" class="block text-sm font-medium text-gray-700">Country (Select)</label>
+                    <select id="country" name="country" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md transition duration-150 ease-in-out">
+                        <option value="us">United States</option>
+                        <option value="ca">Canada</option>
+                        <option value="uk">United Kingdom</option>
+                        <option value="au">Australia</option>
+                    </select>
+                </div>
+                <!-- Checkboxes -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Favorite Hobbies (Multi-checkbox)</label>
+                    <div class="flex flex-wrap gap-x-6 gap-y-2">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="hobbies" value="reading" class="form-checkbox h-4 w-4 text-blue-600 rounded">
+                            <span class="ml-2 text-gray-700">Reading</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="hobbies" value="hiking" class="form-checkbox h-4 w-4 text-blue-600 rounded">
+                            <span class="ml-2 text-gray-700">Hiking</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="hobbies" value="coding" class="form-checkbox h-4 w-4 text-blue-600 rounded">
+                            <span class="ml-2 text-gray-700">Coding</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Radio Buttons -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                    <div class="flex gap-x-6">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="gender" value="male" class="form-radio h-4 w-4 text-blue-600">
+                            <span class="ml-2 text-gray-700">Male</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="gender" value="female" class="form-radio h-4 w-4 text-blue-600">
+                            <span class="ml-2 text-gray-700">Female</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="gender" value="other" class="form-radio h-4 w-4 text-blue-600">
+                            <span class="ml-2 text-gray-700">Other</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Textarea -->
+                <div class="md:col-span-2">
+                    <label for="comments" class="block text-sm font-medium text-gray-700">Comments</label>
+                    <textarea id="comments" name="comments" rows="3" placeholder="Enter your comments here..." class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"></textarea>
+                </div>
+                <!-- Buttons -->
+                <div class="md:col-span-2 flex justify-end gap-4">
+                    <button type="button" id="submitFormBtn" class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                        Submit
+                    </button>
+                    <button type="reset" class="px-6 py-2 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-150 ease-in-out">
+                        Reset
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Page: Advanced Elements -->
+        <div id="advanced-elements" class="page">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Advanced Form Elements</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-300">
+                <!-- Searchable Dropdown (Combobox) -->
+                <div>
+                    <label for="searchableDropdown" class="block text-sm font-medium text-gray-700">Combobox (Cities)</label>
+                    <div class="dropdown-container mt-1">
+                        <input type="text" id="searchableDropdown" placeholder="Select a city..." class="dropdown-input block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <div id="dropdownOptions" class="dropdown-options rounded-md border-gray-300"></div>
+                        <input type="hidden" id="selectedCityValue" name="selectedCity">
+                    </div>
+                </div>
+
+                <!-- Multi-select Dropdown -->
+                <div>
+                    <label for="multiSelectDropdown" class="block text-sm font-medium text-gray-700">Multi-select Dropdown (Languages)</label>
+                    <select multiple id="multiSelectDropdown" name="languages" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out h-32">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="ja">Japanese</option>
+                        <option value="zh">Chinese</option>
+                    </select>
+                </div>
+
+                <!-- Date Picker -->
+                <div>
+                    <label for="datePicker" class="block text-sm font-medium text-gray-700">Date Picker</label>
+                    <input type="date" id="datePicker" name="date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                </div>
+                
+                <!-- Range Slider -->
+                <div>
+                    <label for="rangeSlider" class="block text-sm font-medium text-gray-700">Range Slider (<span id="sliderValue">50</span>)</label>
+                    <input type="range" id="rangeSlider" name="range" min="0" max="100" value="50" class="mt-1 block w-full accent-blue-600 cursor-pointer">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page: Modals & Alerts -->
+        <div id="modals-alerts" class="page">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Modals and Alerts</h2>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-300">
+                <p class="text-sm font-medium text-gray-700 mb-4">Click the buttons below to trigger different types of messages.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Modal Button -->
+                    <div>
+                        <p class="text-sm font-medium text-gray-700 mb-2">A simple modal pop-up</p>
+                        <button id="openModalBtn" class="w-full px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                            Open Modal
+                        </button>
+                    </div>
+                    <!-- Success Alert Button -->
+                    <div>
+                        <p class="text-sm font-medium text-gray-700 mb-2">Show a success message</p>
+                        <button id="showSuccessAlertBtn" class="w-full px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-150 ease-in-out">
+                            Show Success Alert
+                        </button>
+                    </div>
+                    <!-- Warning Alert Button -->
+                    <div>
+                        <p class="text-sm font-medium text-gray-700 mb-2">Show a dismissible warning</p>
+                        <button id="showWarningAlertBtn" class="w-full px-4 py-2 bg-yellow-600 text-white font-medium rounded-lg hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-150 ease-in-out">
+                            Show Warning Alert
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Alert Message Containers -->
+                <div class="mt-6">
+                    <!-- Success Alert -->
+                    <div id="successAlert" class="alert-box bg-green-100 border-green-500 text-green-700 hidden" role="alert">
+                        <span class="font-medium">Success!</span> Your action was completed successfully.
+                    </div>
+                    <!-- Warning Alert -->
+                    <div id="warningAlert" class="alert-box bg-yellow-100 border-yellow-500 text-yellow-700 hidden" role="alert">
+                        <span class="font-medium mr-2">Warning!</span> Please review your data before proceeding.
+                        <button class="ml-auto text-yellow-500 hover:text-yellow-700 focus:outline-none" onclick="document.getElementById('warningAlert').style.display='none'">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page: Drag & Drop -->
+        <div id="drag-and-drop" class="page">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Drag and Drop</h2>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-2">Draggable Items</h3>
+                        <div id="source-list" class="space-y-2 dropzone p-4 rounded-lg">
+                            <div id="drag1" draggable="true" class="draggable-item bg-white p-3 rounded-lg shadow-sm border border-gray-200">Item 1</div>
+                            <div id="drag2" draggable="true" class="draggable-item bg-white p-3 rounded-lg shadow-sm border border-gray-200">Item 2</div>
+                            <div id="drag3" draggable="true" class="draggable-item bg-white p-3 rounded-lg shadow-sm border border-gray-200">Item 3</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-2">Drop Zone</h3>
+                        <div id="target-list" class="space-y-2 dropzone p-4 rounded-lg">
+                            <p class="text-center text-gray-500 text-sm">Drag items here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page: Scrolling -->
+        <div id="scrolling" class="page">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Scrolling Content</h2>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-300">
+                <p class="text-sm text-gray-700 mb-4">Use your automation script to scroll this container and find a specific element.</p>
+                <div id="scrolling-content" class="bg-white">
+                    <!-- Dynamic content for scrolling -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Box Modal -->
+    <div id="messageBoxModal" class="message-box-container">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm text-center transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Modal Message</h3>
+            <div class="mt-2">
+                <p class="text-sm text-gray-500">
+                    This is a message box. You can use your automation script to verify its content and close it.
+                </p>
+            </div>
+            <div class="mt-5 sm:mt-6">
+                <button id="closeModalBtn" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Page Navigation Logic ---
+        const pageButtons = document.querySelectorAll('.nav-button');
+        const pages = document.querySelectorAll('.page');
+        let currentPage = 'home';
+
+        function showPage(pageId) {
+            pages.forEach(page => {
+                page.style.display = 'none';
+            });
+            document.getElementById(pageId).style.display = 'block';
+
+            pageButtons.forEach(button => {
+                button.classList.remove('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+                button.classList.add('text-gray-700', 'hover:bg-gray-200');
+                if (button.getAttribute('data-page') === pageId) {
+                    button.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+                    button.classList.remove('text-gray-700', 'hover:bg-gray-200');
+                }
+            });
+            currentPage = pageId;
+        }
+
+        pageButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                showPage(button.getAttribute('data-page'));
+            });
+        });
+
+        // --- Live Clock Logic ---
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('live-clock').textContent = timeString;
+        }
+        setInterval(updateClock, 1000);
+
+        // --- Data Grid Logic ---
+        let users = [
+            { id: 1, name: 'Alice Smith', email: 'alice@example.com' },
+            { id: 2, name: 'Bob Johnson', email: 'bob@example.com' },
+            { id: 3, name: 'Charlie Brown', email: 'charlie@example.com' },
+            { id: 4, name: 'Diana Prince', email: 'diana@example.com' },
+        ];
+        let isAscending = true;
+
+        function renderTable() {
+            const tableBody = document.getElementById('dataGridBody');
+            tableBody.innerHTML = '';
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-100 transition duration-150 ease-in-out';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="edit-btn text-blue-600 hover:text-blue-900 transition-colors duration-150" data-id="${user.id}">Edit</button>
+                        <button class="delete-btn text-red-600 hover:text-red-900 ml-4 transition-colors duration-150" data-id="${user.id}">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function sortTable(columnIndex) {
+            const columns = ['id', 'name', 'email'];
+            const columnKey = columns[columnIndex];
+            users.sort((a, b) => {
+                const valA = a[columnKey];
+                const valB = b[columnKey];
+                if (typeof valA === 'string') {
+                    return isAscending ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                } else {
+                    return isAscending ? valA - valB : valB - valA;
+                }
+            });
+            isAscending = !isAscending;
+            renderTable();
+        }
+
+        document.getElementById('addRowBtn').addEventListener('click', () => {
+            const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+            users.push({
+                id: newId,
+                name: `New User ${newId}`,
+                email: `user${newId}@example.com`
+            });
+            renderTable();
+        });
+
+        document.getElementById('userDataTable').addEventListener('click', (event) => {
+            const target = event.target;
+            if (target.classList.contains('delete-btn')) {
+                const userId = parseInt(target.getAttribute('data-id'));
+                users = users.filter(user => user.id !== userId);
+                renderTable();
+                console.log(`User with ID ${userId} deleted.`);
+            } else if (target.classList.contains('edit-btn')) {
+                const userId = parseInt(target.getAttribute('data-id'));
+                const user = users.find(u => u.id === userId);
+                if (user) {
+                    const newName = prompt(`Enter new name for user ${user.id} (${user.name}):`);
+                    if (newName !== null && newName.trim() !== '') {
+                        user.name = newName.trim();
+                        renderTable();
+                    }
+                }
+            }
+        });
+
+        // --- Forms Logic ---
+        const emailInput = document.getElementById('email');
+        const emailValidationMessage = document.getElementById('email-validation-message');
+
+        function validateEmail() {
+            const email = emailInput.value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (email.trim() === '') {
+                emailValidationMessage.textContent = 'Email Address is required.';
+                emailValidationMessage.classList.remove('hidden');
+            } else if (!emailRegex.test(email)) {
+                emailValidationMessage.textContent = 'Please enter a valid email address.';
+                emailValidationMessage.classList.remove('hidden');
+            } else {
+                emailValidationMessage.classList.add('hidden');
+                emailValidationMessage.textContent = '';
+            }
+        }
+        
+        emailInput.addEventListener('blur', validateEmail);
+        emailInput.addEventListener('input', () => {
+            if (!emailValidationMessage.classList.contains('hidden')) {
+                validateEmail(); // Re-validate on input to clear the error
+            }
+        });
+
+        document.getElementById('submitFormBtn').addEventListener('click', (event) => {
+            event.preventDefault();
+            validateEmail(); // Final check on submit
+            const isEmailValid = emailValidationMessage.classList.contains('hidden');
+            if (isEmailValid) {
+                const form = document.getElementById('practiceForm');
+                const formData = new FormData(form);
+                const data = {};
+                formData.forEach((value, key) => {
+                    if (key === 'hobbies') {
+                        if (!data[key]) {
+                            data[key] = [];
+                        }
+                        data[key].push(value);
+                    } else {
+                        data[key] = value;
+                    }
+                });
+                console.log('Form data submitted:', data);
+                // In a real app, you would submit this data to a server
+            }
+        });
+        
+        // --- Advanced Elements Logic ---
+        const cities = [
+            'New York', 'London', 'Tokyo', 'Paris', 'Sydney', 'Dubai', 'Beijing', 'Rio de Janeiro', 'Cairo', 'Moscow'
+        ];
+        const searchableDropdownInput = document.getElementById('searchableDropdown');
+        const dropdownOptions = document.getElementById('dropdownOptions');
+        const selectedCityValue = document.getElementById('selectedCityValue');
+        function filterCities(searchTerm) {
+            dropdownOptions.innerHTML = '';
+            const filteredCities = cities.filter(city =>
+                city.toLowerCase().startsWith(searchTerm.toLowerCase())
+            );
+            filteredCities.forEach(city => {
+                const option = document.createElement('div');
+                option.textContent = city;
+                option.addEventListener('click', () => {
+                    searchableDropdownInput.value = city;
+                    selectedCityValue.value = city;
+                    dropdownOptions.style.display = 'none';
+                    console.log(`Combobox selected: ${city}`);
+                });
+                dropdownOptions.appendChild(option);
+            });
+            dropdownOptions.style.display = filteredCities.length > 0 ? 'block' : 'none';
+        }
+        searchableDropdownInput.addEventListener('input', (e) => {
+            filterCities(e.target.value);
+        });
+        searchableDropdownInput.addEventListener('focus', () => {
+            filterCities(searchableDropdownInput.value);
+        });
+        document.addEventListener('click', (e) => {
+            if (!searchableDropdownInput.parentElement.contains(e.target)) {
+                dropdownOptions.style.display = 'none';
+            }
+        });
+        const rangeSlider = document.getElementById('rangeSlider');
+        const sliderValueDisplay = document.getElementById('sliderValue');
+        rangeSlider.addEventListener('input', (e) => {
+            sliderValueDisplay.textContent = e.target.value;
+        });
+
+        // --- Modals & Alerts Logic ---
+        const modal = document.getElementById('messageBoxModal');
+        const successAlert = document.getElementById('successAlert');
+        const warningAlert = document.getElementById('warningAlert');
+        document.getElementById('openModalBtn').addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        document.getElementById('showSuccessAlertBtn').addEventListener('click', () => {
+            successAlert.style.display = 'flex';
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 5000); // Hide after 5 seconds
+        });
+        document.getElementById('showWarningAlertBtn').addEventListener('click', () => {
+            warningAlert.style.display = 'flex';
+        });
+        
+        // --- Drag & Drop Logic ---
+        const sourceList = document.getElementById('source-list');
+        const targetList = document.getElementById('target-list');
+        let draggedItem = null;
+
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.classList.contains('draggable-item')) {
+                draggedItem = e.target;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', e.target.id);
+                setTimeout(() => {
+                    draggedItem.classList.add('opacity-50');
+                }, 0);
+            }
+        });
+
+        document.addEventListener('dragend', (e) => {
+            if (draggedItem) {
+                draggedItem.classList.remove('opacity-50');
+                draggedItem = null;
+            }
+        });
+
+        document.querySelectorAll('.dropzone').forEach(dropzone => {
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                dropzone.classList.add('hovered');
+            });
+
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('hovered');
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('hovered');
+                if (draggedItem) {
+                    // Remove any placeholder text in the drop zone
+                    const placeholder = dropzone.querySelector('p');
+                    if (placeholder) {
+                        placeholder.remove();
+                    }
+                    dropzone.appendChild(draggedItem);
+                }
+            });
+        });
+
+        // --- Scrolling Logic ---
+        const scrollingContent = document.getElementById('scrolling-content');
+        for (let i = 1; i <= 50; i++) {
+            const item = document.createElement('div');
+            item.className = 'p-2 border-b border-gray-200';
+            item.textContent = `Scroll Item #${i}`;
+            scrollingContent.appendChild(item);
+        }
+
+        // --- Initial State ---
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('home');
+            renderTable();
+            updateClock();
+        });
+    </script>
+
+</body>
+</html>
