@@ -89,6 +89,136 @@
             padding: 1rem;
             border-radius: 0.5rem;
         }
+        .custom-multi-select {
+            position: relative;
+        }
+        .custom-select-trigger {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            background-color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .custom-select-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #d1d5db;
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 10;
+            display: none;
+        }
+        .custom-select-option {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+        .custom-select-option:hover {
+            background-color: #f3f4f6;
+        }
+        .custom-select-option.selected {
+            background-color: #e5e7eb;
+            font-weight: 500;
+        }
+        /* New custom styles for the date picker */
+        .datepicker-container {
+            position: relative;
+        }
+        .datepicker-input {
+            cursor: pointer;
+        }
+        .datepicker-calendar {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 50;
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        .datepicker-calendar.show {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .datepicker-calendar.show {
+                flex-direction: row;
+            }
+        }
+        .calendar-month {
+            text-align: center;
+        }
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .calendar-header .month-year {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .calendar-header button {
+            padding: 0.25rem;
+            border-radius: 9999px;
+            transition: background-color 0.1s;
+        }
+        .calendar-header button:hover {
+            background-color: #e5e7eb;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 0.5rem;
+        }
+        .calendar-weekday {
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+        }
+        .calendar-day {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background-color 0.1s, color 0.1s;
+            font-size: 0.875rem;
+        }
+        .calendar-day:hover:not(.selected):not(.in-range) {
+            background-color: #f3f4f6;
+        }
+        .calendar-day.selected {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .calendar-day.in-range {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .calendar-day.start-range {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .calendar-day.end-range {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
     </style>
 </head>
 <body class="p-6 md:p-12">
@@ -107,6 +237,7 @@
             <button class="nav-button px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ease-in-out text-gray-700 hover:bg-gray-200" data-page="modals-alerts">Modals & Alerts</button>
             <button class="nav-button px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ease-in-out text-gray-700 hover:bg-gray-200" data-page="drag-and-drop">Drag & Drop</button>
             <button class="nav-button px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ease-in-out text-gray-700 hover:bg-gray-200" data-page="scrolling">Scrolling</button>
+            <button class="nav-button px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ease-in-out text-gray-700 hover:bg-gray-200" data-page="dynamic-complex">Dynamic & Complex Elements</button>
         </nav>
 
         <!-- Page: Home (Data Grid & Clock) -->
@@ -250,25 +381,56 @@
                     </select>
                 </div>
 
-                <!-- Multi-select Dropdown -->
+                <!-- Custom Multi-select Dropdown -->
                 <div>
-                    <label for="multiSelectDropdown" class="block text-sm font-medium text-gray-700">Multi-select Dropdown (Languages)</label>
-                    <select multiple id="multiSelectDropdown" name="languages" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out h-32">
-                        <option value="en">English</option>
-                        <option value="es">Spanish</option>
-                        <option value="fr">French</option>
-                        <option value="de">German</option>
-                        <option value="ja">Japanese</option>
-                        <option value="zh">Chinese</option>
-                    </select>
-                </div>
-
-                <!-- Date Picker -->
-                <div>
-                    <label for="datePicker" class="block text-sm font-medium text-gray-700">Date Picker</label>
-                    <input type="date" id="datePicker" name="date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                    <label for="customMultiSelect" class="block text-sm font-medium text-gray-700">Custom Multi-Select (Skills)</label>
+                    <div class="custom-multi-select mt-1">
+                        <div id="custom-select-trigger" class="custom-select-trigger">
+                            <span id="selected-skills-display">Select skills...</span>
+                            <span>
+                                <!-- SVG for a caret/arrow icon -->
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </span>
+                        </div>
+                        <div id="custom-select-options" class="custom-select-options">
+                            <div class="custom-select-option" data-value="js">JavaScript</div>
+                            <div class="custom-select-option" data-value="py">Python</div>
+                            <div class="custom-select-option" data-value="html">HTML</div>
+                            <div class="custom-select-option" data-value="css">CSS</div>
+                            <div class="custom-select-option" data-value="qa">QA Testing</div>
+                        </div>
+                        <!-- Hidden input to store selected values for form submission -->
+                        <input type="hidden" id="selected-skills" name="selectedSkills">
+                    </div>
                 </div>
                 
+                <!-- Custom Date Picker with two-month view -->
+                <div class="datepicker-container md:col-span-2">
+                    <label for="departureDateInput" class="block text-sm font-medium text-gray-700 mb-2">Departure and Return Dates</label>
+                    <div class="flex gap-4">
+                        <input type="text" id="departureDateInput" readonly placeholder="Departure Date" class="datepicker-input flex-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <input type="text" id="returnDateInput" readonly placeholder="Return Date" class="datepicker-input flex-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                    </div>
+                    <!-- Calendar View -->
+                    <div id="datePickerCalendar" class="datepicker-calendar">
+                        <!-- Navigation Arrows -->
+                        <div class="absolute top-6 left-6 z-10">
+                            <button id="prevMonthBtn" aria-label="Previous month" class="p-2 rounded-full hover:bg-gray-200 transition-colors">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                            </button>
+                        </div>
+                        <div class="absolute top-6 right-6 z-10">
+                            <button id="nextMonthBtn" aria-label="Next month" class="p-2 rounded-full hover:bg-gray-200 transition-colors">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Calendar Months will be rendered here by JS -->
+                        <div id="firstMonthCalendar" class="calendar-month"></div>
+                        <div id="secondMonthCalendar" class="calendar-month"></div>
+                    </div>
+                </div>
+
                 <!-- Range Slider -->
                 <div>
                     <label for="rangeSlider" class="block text-sm font-medium text-gray-700">Range Slider (<span id="sliderValue">50</span>)</label>
@@ -356,6 +518,64 @@
                 </div>
             </div>
         </div>
+
+        <!-- Page: Dynamic & Complex Elements -->
+        <div id="dynamic-complex" class="page">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Dynamic & Complex Elements</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-300">
+                
+                <!-- Dynamic Content Section -->
+                <div>
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Dynamic Content</h3>
+                    <p class="text-sm text-gray-500 mb-2">Content will appear after 3 seconds.</p>
+                    <button id="loadDynamicContentBtn" class="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                        Load Dynamic Content
+                    </button>
+                    <div id="dynamicContentArea" class="mt-4 p-4 border border-dashed border-gray-400 rounded-md">
+                        <p id="loadingMessage" class="text-gray-500">Loading...</p>
+                        <!-- Dynamic content will be placed here -->
+                    </div>
+                </div>
+
+                <!-- File Upload Section -->
+                <div>
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">File Upload</h3>
+                    <label class="block text-sm font-medium text-gray-700" for="file-upload">
+                        Choose a file to upload:
+                    </label>
+                    <input id="file-upload" name="file-upload" type="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition duration-150 ease-in-out">
+                    <p class="text-xs text-gray-500 mt-2">No actual file is uploaded, just for automation testing practice.</p>
+                </div>
+                
+                <!-- Progress Bar Section -->
+                <div class="md:col-span-2">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Progress Bar</h3>
+                    <p class="text-sm text-gray-500 mb-2">Watch the progress bar animate from 0% to 100%.</p>
+                    <div id="progressBarContainer" class="w-full bg-gray-200 rounded-full h-4 relative">
+                        <div id="progressBar" class="bg-green-600 h-4 rounded-full transition-all duration-100 ease-linear" style="width: 0%;"></div>
+                        <span id="progressText" class="absolute top-0 left-1/2 -translate-x-1/2 text-xs font-semibold text-white">0%</span>
+                    </div>
+                </div>
+
+                <!-- Iframe Section -->
+                <div class="md:col-span-2">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Iframe Content</h3>
+                    <p class="text-sm text-gray-500 mb-2">This content is inside a nested browsing context (iframe).</p>
+                    <!-- Using srcdoc for self-contained content -->
+                    <iframe id="testIframe" class="w-full h-64 border border-gray-300 rounded-lg shadow-sm"
+                        srcdoc="
+                            <div style='font-family: Arial, sans-serif; padding: 1rem;'>
+                                <h1 style='font-size: 1.25rem; font-weight: bold;'>Iframe Content</h1>
+                                <p style='margin-top: 0.5rem;'>This text is inside the iframe. Automation scripts need to switch to this context to interact with elements here.</p>
+                                <button id='iframeButton' style='margin-top: 1rem; padding: 0.5rem 1rem; border-radius: 0.25rem; background-color: #3b82f6; color: white; border: none;'>Click Me in Iframe</button>
+                            </div>
+                        ">
+                    </iframe>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
     <!-- Message Box Modal -->
@@ -372,310 +592,536 @@
                     Close
                 </button>
             </div>
+            </div>
         </div>
-    </div>
 
     <script>
-        // --- Page Navigation Logic ---
-        const pageButtons = document.querySelectorAll('.nav-button');
-        const pages = document.querySelectorAll('.page');
-        let currentPage = 'home';
+            // --- Page Navigation Logic ---
+            const pageButtons = document.querySelectorAll('.nav-button');
+            const pages = document.querySelectorAll('.page');
+            let currentPage = 'home';
 
-        function showPage(pageId) {
-            pages.forEach(page => {
-                page.style.display = 'none';
-            });
-            document.getElementById(pageId).style.display = 'block';
+            function showPage(pageId) {
+                pages.forEach(page => {
+                    page.style.display = 'none';
+                });
+                document.getElementById(pageId).style.display = 'block';
+
+                pageButtons.forEach(button => {
+                    button.classList.remove('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+                    button.classList.add('text-gray-700', 'hover:bg-gray-200');
+                    if (button.getAttribute('data-page') === pageId) {
+                        button.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+                        button.classList.remove('text-gray-700', 'hover:bg-gray-200');
+                    }
+                });
+                currentPage = pageId;
+            }
 
             pageButtons.forEach(button => {
-                button.classList.remove('bg-blue-600', 'text-white', 'hover:bg-blue-700');
-                button.classList.add('text-gray-700', 'hover:bg-gray-200');
-                if (button.getAttribute('data-page') === pageId) {
-                    button.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
-                    button.classList.remove('text-gray-700', 'hover:bg-gray-200');
-                }
+                button.addEventListener('click', () => {
+                    showPage(button.getAttribute('data-page'));
+                });
             });
-            currentPage = pageId;
-        }
 
-        pageButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                showPage(button.getAttribute('data-page'));
-            });
-        });
-
-        // --- Live Clock Logic ---
-        function updateClock() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('live-clock').textContent = timeString;
-        }
-        setInterval(updateClock, 1000);
-
-        // --- Data Grid Logic ---
-        let users = [
-            { id: 1, name: 'Alice Smith', email: 'alice@example.com' },
-            { id: 2, name: 'Bob Johnson', email: 'bob@example.com' },
-            { id: 3, name: 'Charlie Brown', email: 'charlie@example.com' },
-            { id: 4, name: 'Diana Prince', email: 'diana@example.com' },
-        ];
-        let isAscending = true;
-
-        function renderTable() {
-            const tableBody = document.getElementById('dataGridBody');
-            tableBody.innerHTML = '';
-            users.forEach(user => {
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-gray-100 transition duration-150 ease-in-out';
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.id}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.name}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button class="edit-btn text-blue-600 hover:text-blue-900 transition-colors duration-150" data-id="${user.id}">Edit</button>
-                        <button class="delete-btn text-red-600 hover:text-red-900 ml-4 transition-colors duration-150" data-id="${user.id}">Delete</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        function sortTable(columnIndex) {
-            const columns = ['id', 'name', 'email'];
-            const columnKey = columns[columnIndex];
-            users.sort((a, b) => {
-                const valA = a[columnKey];
-                const valB = b[columnKey];
-                if (typeof valA === 'string') {
-                    return isAscending ? valA.localeCompare(valB) : valB.localeCompare(valA);
-                } else {
-                    return isAscending ? valA - valB : valB - valA;
-                }
-            });
-            isAscending = !isAscending;
-            renderTable();
-        }
-
-        document.getElementById('addRowBtn').addEventListener('click', () => {
-            const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-            users.push({
-                id: newId,
-                name: `New User ${newId}`,
-                email: `user${newId}@example.com`
-            });
-            renderTable();
-        });
-
-        document.getElementById('userDataTable').addEventListener('click', (event) => {
-            const target = event.target;
-            if (target.classList.contains('delete-btn')) {
-                const userId = parseInt(target.getAttribute('data-id'));
-                users = users.filter(user => user.id !== userId);
-                renderTable();
-                console.log(`User with ID ${userId} deleted.`);
-            } else if (target.classList.contains('edit-btn')) {
-                const userId = parseInt(target.getAttribute('data-id'));
-                const user = users.find(u => u.id === userId);
-                if (user) {
-                    const newName = prompt(`Enter new name for user ${user.id} (${user.name}):`);
-                    if (newName !== null && newName.trim() !== '') {
-                        user.name = newName.trim();
-                        renderTable();
-                    }
-                }
+            // --- Live Clock Logic ---
+            function updateClock() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString();
+                document.getElementById('live-clock').textContent = timeString;
             }
-        });
+            setInterval(updateClock, 1000);
 
-        // --- Forms Logic ---
-        const emailInput = document.getElementById('email');
-        const emailValidationMessage = document.getElementById('email-validation-message');
-        const formSuccessAlert = document.getElementById('formSuccessAlert');
+            // --- Data Grid Logic ---
+            let users = [
+                { id: 1, name: 'Alice Smith', email: 'alice@example.com' },
+                { id: 2, name: 'Bob Johnson', email: 'bob@example.com' },
+                { id: 3, name: 'Charlie Brown', email: 'charlie@example.com' },
+                { id: 4, name: 'Diana Prince', email: 'diana@example.com' },
+            ];
+            let isAscending = true;
 
-        function validateEmail() {
-            const email = emailInput.value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
-            if (email.trim() === '') {
-                emailValidationMessage.textContent = 'Email Address is required.';
-                emailValidationMessage.classList.remove('hidden');
-            } else if (!emailRegex.test(email)) {
-                emailValidationMessage.textContent = 'Please enter a valid email address.';
-                emailValidationMessage.classList.remove('hidden');
-            } else {
-                emailValidationMessage.classList.add('hidden');
-                emailValidationMessage.textContent = '';
+            function renderTable() {
+                const tableBody = document.getElementById('dataGridBody');
+                tableBody.innerHTML = '';
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-100 transition duration-150 ease-in-out';
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.id}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button class="edit-btn text-blue-600 hover:text-blue-900 transition-colors duration-150" data-id="${user.id}">Edit</button>
+                            <button class="delete-btn text-red-600 hover:text-red-900 ml-4 transition-colors duration-150" data-id="${user.id}">Delete</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
             }
-        }
-        
-        emailInput.addEventListener('blur', validateEmail);
-        emailInput.addEventListener('input', () => {
-            if (!emailValidationMessage.classList.contains('hidden')) {
-                validateEmail(); // Re-validate on input to clear the error
-            }
-        });
 
-        document.getElementById('submitFormBtn').addEventListener('click', (event) => {
-            event.preventDefault();
-            validateEmail(); // Final check on submit
-            const isEmailValid = emailValidationMessage.classList.contains('hidden');
-            if (isEmailValid) {
-                // Hide any previous alerts
-                formSuccessAlert.style.display = 'none';
-
-                const form = document.getElementById('practiceForm');
-                const formData = new FormData(form);
-                const data = {};
-                formData.forEach((value, key) => {
-                    if (key === 'hobbies') {
-                        if (!data[key]) {
-                            data[key] = [];
-                        }
-                        data[key].push(value);
+            function sortTable(columnIndex) {
+                const columns = ['id', 'name', 'email'];
+                const columnKey = columns[columnIndex];
+                users.sort((a, b) => {
+                    const valA = a[columnKey];
+                    const valB = b[columnKey];
+                    if (typeof valA === 'string') {
+                        return isAscending ? valA.localeCompare(valB) : valB.localeCompare(valA);
                     } else {
-                        data[key] = value;
+                        return isAscending ? valA - valB : valB - valA;
                     }
                 });
-
-                // Manually add country value since it's no longer in the form tag
-                data.country = document.getElementById('country').value;
-
-                console.log('Form data submitted:', data);
-                // In a real app, you would submit this data to a server
-
-                // Show success message
-                formSuccessAlert.style.display = 'flex';
-                setTimeout(() => {
-                    formSuccessAlert.style.display = 'none';
-                }, 3000); // Hide after 3 seconds
+                isAscending = !isAscending;
+                renderTable();
             }
-        });
-        
-        // --- Advanced Elements Logic ---
-        const cities = [
-            'New York', 'London', 'Tokyo', 'Paris', 'Sydney', 'Dubai', 'Beijing', 'Rio de Janeiro', 'Cairo', 'Moscow'
-        ];
-        const searchableDropdownInput = document.getElementById('searchableDropdown');
-        const dropdownOptions = document.getElementById('dropdownOptions');
-        const selectedCityValue = document.getElementById('selectedCityValue');
-        function filterCities(searchTerm) {
-            dropdownOptions.innerHTML = '';
-            const filteredCities = cities.filter(city =>
-                city.toLowerCase().startsWith(searchTerm.toLowerCase())
-            );
-            filteredCities.forEach(city => {
-                const option = document.createElement('div');
-                option.textContent = city;
-                option.addEventListener('click', () => {
-                    searchableDropdownInput.value = city;
-                    selectedCityValue.value = city;
-                    dropdownOptions.style.display = 'none';
-                    console.log(`Combobox selected: ${city}`);
+
+            document.getElementById('addRowBtn').addEventListener('click', () => {
+                const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+                users.push({
+                    id: newId,
+                    name: `New User ${newId}`,
+                    email: `user${newId}@example.com`
                 });
-                dropdownOptions.appendChild(option);
-            });
-            dropdownOptions.style.display = filteredCities.length > 0 ? 'block' : 'none';
-        }
-        searchableDropdownInput.addEventListener('input', (e) => {
-            filterCities(e.target.value);
-        });
-        searchableDropdownInput.addEventListener('focus', () => {
-            filterCities(searchableDropdownInput.value);
-        });
-        document.addEventListener('click', (e) => {
-            if (!searchableDropdownInput.parentElement.contains(e.target)) {
-                dropdownOptions.style.display = 'none';
-            }
-        });
-        const rangeSlider = document.getElementById('rangeSlider');
-        const sliderValueDisplay = document.getElementById('sliderValue');
-        rangeSlider.addEventListener('input', (e) => {
-            sliderValueDisplay.textContent = e.target.value;
-        });
-
-        // --- Modals & Alerts Logic ---
-        const modal = document.getElementById('messageBoxModal');
-        const successAlert = document.getElementById('successAlert');
-        const warningAlert = document.getElementById('warningAlert');
-        document.getElementById('openModalBtn').addEventListener('click', () => {
-            modal.style.display = 'flex';
-        });
-        document.getElementById('closeModalBtn').addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-        document.getElementById('showSuccessAlertBtn').addEventListener('click', () => {
-            successAlert.style.display = 'flex';
-            setTimeout(() => {
-                successAlert.style.display = 'none';
-            }, 5000); // Hide after 5 seconds
-        });
-        document.getElementById('showWarningAlertBtn').addEventListener('click', () => {
-            warningAlert.style.display = 'flex';
-        });
-        
-        // --- Drag & Drop Logic ---
-        const sourceList = document.getElementById('source-list');
-        const targetList = document.getElementById('target-list');
-        let draggedItem = null;
-
-        document.addEventListener('dragstart', (e) => {
-            if (e.target.classList.contains('draggable-item')) {
-                draggedItem = e.target;
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text/plain', e.target.id);
-                setTimeout(() => {
-                    draggedItem.classList.add('opacity-50');
-                }, 0);
-            }
-        });
-
-        document.addEventListener('dragend', (e) => {
-            if (draggedItem) {
-                draggedItem.classList.remove('opacity-50');
-                draggedItem = null;
-            }
-        });
-
-        document.querySelectorAll('.dropzone').forEach(dropzone => {
-            dropzone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = 'move';
-                dropzone.classList.add('hovered');
+                renderTable();
             });
 
-            dropzone.addEventListener('dragleave', () => {
-                dropzone.classList.remove('hovered');
-            });
-
-            dropzone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropzone.classList.remove('hovered');
-                if (draggedItem) {
-                    // Remove any placeholder text in the drop zone
-                    const placeholder = dropzone.querySelector('p');
-                    if (placeholder) {
-                        placeholder.remove();
+            document.getElementById('userDataTable').addEventListener('click', (event) => {
+                const target = event.target;
+                if (target.classList.contains('delete-btn')) {
+                    const userId = parseInt(target.getAttribute('data-id'));
+                    users = users.filter(user => user.id !== userId);
+                    renderTable();
+                    console.log(`User with ID ${userId} deleted.`);
+                } else if (target.classList.contains('edit-btn')) {
+                    const userId = parseInt(target.getAttribute('data-id'));
+                    const user = users.find(u => u.id === userId);
+                    if (user) {
+                        const newName = prompt(`Enter new name for user ${user.id} (${user.name}):`);
+                        if (newName !== null && newName.trim() !== '') {
+                            user.name = newName.trim();
+                            renderTable();
+                        }
                     }
-                    dropzone.appendChild(draggedItem);
                 }
             });
-        });
 
-        // --- Scrolling Logic ---
-        const scrollingContent = document.getElementById('scrolling-content');
-        for (let i = 1; i <= 50; i++) {
-            const item = document.createElement('div');
-            item.className = 'p-2 border-b border-gray-200';
-            item.textContent = `Scroll Item #${i}`;
-            scrollingContent.appendChild(item);
-        }
+            // --- Forms Logic ---
+            const emailInput = document.getElementById('email');
+            const emailValidationMessage = document.getElementById('email-validation-message');
+            const formSuccessAlert = document.getElementById('formSuccessAlert');
 
-        // --- Initial State ---
-        document.addEventListener('DOMContentLoaded', () => {
-            showPage('home');
-            renderTable();
-            updateClock();
-        });
+            function validateEmail() {
+                const email = emailInput.value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                
+                if (email.trim() === '') {
+                    emailValidationMessage.textContent = 'Email Address is required.';
+                    emailValidationMessage.classList.remove('hidden');
+                } else if (!emailRegex.test(email)) {
+                    emailValidationMessage.textContent = 'Please enter a valid email address.';
+                    emailValidationMessage.classList.remove('hidden');
+                } else {
+                    emailValidationMessage.classList.add('hidden');
+                    emailValidationMessage.textContent = '';
+                }
+            }
+            
+            emailInput.addEventListener('blur', validateEmail);
+            emailInput.addEventListener('input', () => {
+                if (!emailValidationMessage.classList.contains('hidden')) {
+                    validateEmail(); // Re-validate on input to clear the error
+                }
+            });
+
+            document.getElementById('submitFormBtn').addEventListener('click', (event) => {
+                event.preventDefault();
+                validateEmail(); // Final check on submit
+                const isEmailValid = emailValidationMessage.classList.contains('hidden');
+                if (isEmailValid) {
+                    // Hide any previous alerts
+                    formSuccessAlert.style.display = 'none';
+
+                    const form = document.getElementById('practiceForm');
+                    const formData = new FormData(form);
+                    const data = {};
+                    formData.forEach((value, key) => {
+                        if (key === 'hobbies') {
+                            if (!data[key]) {
+                                data[key] = [];
+                            }
+                            data[key].push(value);
+                        } else {
+                            data[key] = value;
+                        }
+                    });
+
+                    // Manually add country value since it's no longer in the form tag
+                    data.country = document.getElementById('country').value;
+                    // Add new advanced elements to the submitted data
+                    data.departureDate = document.getElementById('departureDateInput').value;
+                    data.returnDate = document.getElementById('returnDateInput').value;
+                    data.skills = document.getElementById('selected-skills').value.split(',');
+
+                    console.log('Form data submitted:', data);
+                    // In a real app, you would submit this data to a server
+
+                    // Show success message
+                    formSuccessAlert.style.display = 'flex';
+                    setTimeout(() => {
+                        formSuccessAlert.style.display = 'none';
+                    }, 3000); // Hide after 3 seconds
+                }
+            });
+            
+            // --- Advanced Elements Logic ---
+            const cities = [
+                'New York', 'London', 'Tokyo', 'Paris', 'Sydney', 'Dubai', 'Beijing', 'Rio de Janeiro', 'Cairo', 'Moscow'
+            ];
+            const searchableDropdownInput = document.getElementById('searchableDropdown');
+            const dropdownOptions = document.getElementById('dropdownOptions');
+            const selectedCityValue = document.getElementById('selectedCityValue');
+            function filterCities(searchTerm) {
+                dropdownOptions.innerHTML = '';
+                const filteredCities = cities.filter(city =>
+                    city.toLowerCase().startsWith(searchTerm.toLowerCase())
+                );
+                filteredCities.forEach(city => {
+                    const option = document.createElement('div');
+                    option.textContent = city;
+                    option.addEventListener('click', () => {
+                        searchableDropdownInput.value = city;
+                        selectedCityValue.value = city;
+                        dropdownOptions.style.display = 'none';
+                        console.log(`Combobox selected: ${city}`);
+                    });
+                    dropdownOptions.appendChild(option);
+                });
+                dropdownOptions.style.display = filteredCities.length > 0 ? 'block' : 'none';
+            }
+            searchableDropdownInput.addEventListener('input', (e) => {
+                filterCities(e.target.value);
+            });
+            searchableDropdownInput.addEventListener('focus', () => {
+                filterCities(searchableDropdownInput.value);
+            });
+            document.addEventListener('click', (e) => {
+                if (!searchableDropdownInput.parentElement.contains(e.target)) {
+                    dropdownOptions.style.display = 'none';
+                }
+            });
+            const rangeSlider = document.getElementById('rangeSlider');
+            const sliderValueDisplay = document.getElementById('sliderValue');
+            rangeSlider.addEventListener('input', (e) => {
+                sliderValueDisplay.textContent = e.target.value;
+            });
+
+            // Custom Multi-Select Dropdown Logic
+            const customSelectTrigger = document.getElementById('custom-select-trigger');
+            const customSelectOptions = document.getElementById('custom-select-options');
+            const customSelectOptionsList = document.querySelectorAll('.custom-select-option');
+            const selectedSkillsDisplay = document.getElementById('selected-skills-display');
+            const selectedSkillsInput = document.getElementById('selected-skills');
+            let selectedSkills = [];
+            
+            customSelectTrigger.addEventListener('click', () => {
+                customSelectOptions.style.display = customSelectOptions.style.display === 'block' ? 'none' : 'block';
+            });
+
+            customSelectOptionsList.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    const value = e.target.dataset.value;
+                    const index = selectedSkills.indexOf(value);
+                    if (index > -1) {
+                        selectedSkills.splice(index, 1);
+                        e.target.classList.remove('selected');
+                    } else {
+                        selectedSkills.push(value);
+                        e.target.classList.add('selected');
+                    }
+                    updateSelectedSkillsDisplay();
+                    selectedSkillsInput.value = selectedSkills.join(',');
+                });
+            });
+
+            function updateSelectedSkillsDisplay() {
+                if (selectedSkills.length === 0) {
+                    selectedSkillsDisplay.textContent = 'Select skills...';
+                } else {
+                    selectedSkillsDisplay.textContent = selectedSkills.map(skill => {
+                        // Map the value back to the full text
+                        switch(skill) {
+                            case 'js': return 'JavaScript';
+                            case 'py': return 'Python';
+                            case 'html': return 'HTML';
+                            case 'css': return 'CSS';
+                            case 'qa': return 'QA Testing';
+                        }
+                    }).join(', ');
+                }
+            }
+
+            // --- Custom Date Picker Logic ---
+            let departureDate = null;
+            let returnDate = null;
+            let currentCalendarMonth = new Date();
+
+            const departureDateInput = document.getElementById('departureDateInput');
+            const returnDateInput = document.getElementById('returnDateInput');
+            const datePickerCalendar = document.getElementById('datePickerCalendar');
+            const prevMonthBtn = document.getElementById('prevMonthBtn');
+            const nextMonthBtn = document.getElementById('nextMonthBtn');
+            const firstMonthContainer = document.getElementById('firstMonthCalendar');
+            const secondMonthContainer = document.getElementById('secondMonthCalendar');
+            
+            function formatDate(date) {
+                if (!date) return '';
+                const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+                return new Intl.DateTimeFormat('en-US', options).format(date);
+            }
+
+            function updateDateInputs() {
+                departureDateInput.value = formatDate(departureDate);
+                returnDateInput.value = formatDate(returnDate);
+            }
+
+            function renderCalendar() {
+                // Render the first month
+                renderMonth(firstMonthContainer, currentCalendarMonth);
+                
+                // Render the second month
+                const nextMonth = new Date(currentCalendarMonth.getFullYear(), currentCalendarMonth.getMonth() + 1, 1);
+                renderMonth(secondMonthContainer, nextMonth);
+            }
+
+            function renderMonth(container, date) {
+                const monthName = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(date);
+                const year = date.getFullYear();
+                const firstDay = new Date(year, date.getMonth(), 1).getDay(); // 0-6, Sun-Sat
+                const daysInMonth = new Date(year, date.getMonth() + 1, 0).getDate();
+                const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                
+                let html = `<div class="month-year text-xl font-semibold mb-4 text-gray-800">${monthName}</div>`;
+                html += `<div class="calendar-grid">`;
+                
+                weekdays.forEach(day => {
+                    html += `<div class="calendar-weekday">${day}</div>`;
+                });
+
+                const startDay = firstDay === 0 ? 6 : firstDay - 1; // Adjust for week starting on Monday
+                
+                for (let i = 0; i < startDay; i++) {
+                    html += `<div class="w-10 h-10"></div>`; // Empty cells for padding
+                }
+                
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const dayDate = new Date(year, date.getMonth(), i);
+                    const isSelected = (departureDate && dayDate.toDateString() === departureDate.toDateString()) ||
+                                      (returnDate && dayDate.toDateString() === returnDate.toDateString());
+                    const isInRange = departureDate && returnDate && dayDate > departureDate && dayDate < returnDate;
+                    
+                    let classes = 'calendar-day';
+                    if (isSelected) {
+                        classes += ' selected';
+                    } else if (isInRange) {
+                        classes += ' in-range';
+                    }
+
+                    if (departureDate && dayDate.toDateString() === departureDate.toDateString()) {
+                         classes += ' start-range';
+                    }
+                    if (returnDate && dayDate.toDateString() === returnDate.toDateString()) {
+                         classes += ' end-range';
+                    }
+                    
+                    html += `<div class="${classes}" data-day="${dayDate.toISOString()}" role="button">${i}</div>`;
+                }
+                
+                html += `</div>`;
+                container.innerHTML = html;
+            }
+
+            function handleCalendarClick(event) {
+                const dayEl = event.target.closest('.calendar-day');
+                if (dayEl) {
+                    const date = new Date(dayEl.dataset.day);
+                    if (!departureDate || (departureDate && date < departureDate)) {
+                        departureDate = date;
+                        returnDate = null; // Reset return date if we select a new start date
+                    } else if (departureDate && !returnDate) {
+                        returnDate = date;
+                        datePickerCalendar.classList.remove('show');
+                    } else {
+                        departureDate = date;
+                        returnDate = null;
+                    }
+                    updateDateInputs();
+                    renderCalendar();
+                }
+            }
+            
+            function handlePrevNext(direction) {
+                const currentMonth = new Date(currentCalendarMonth);
+                currentCalendarMonth.setMonth(currentMonth.getMonth() + direction);
+                renderCalendar();
+            }
+
+            datePickerCalendar.addEventListener('click', handleCalendarClick);
+            prevMonthBtn.addEventListener('click', () => handlePrevNext(-1));
+            nextMonthBtn.addEventListener('click', () => handlePrevNext(1));
+            
+            // Show/hide calendar on input click
+            [departureDateInput, returnDateInput].forEach(input => {
+                input.addEventListener('click', () => {
+                    datePickerCalendar.classList.toggle('show');
+                });
+            });
+
+            // Hide calendar when clicking outside
+            document.addEventListener('click', (event) => {
+                const isClickInside = datePickerCalendar.contains(event.target) || departureDateInput.contains(event.target) || returnDateInput.contains(event.target);
+                if (!isClickInside) {
+                    datePickerCalendar.classList.remove('show');
+                }
+            });
+
+            // --- Modals & Alerts Logic ---
+            const modal = document.getElementById('messageBoxModal');
+            const successAlert = document.getElementById('successAlert');
+            const warningAlert = document.getElementById('warningAlert');
+            document.getElementById('openModalBtn').addEventListener('click', () => {
+                modal.style.display = 'flex';
+            });
+            document.getElementById('closeModalBtn').addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+            document.getElementById('showSuccessAlertBtn').addEventListener('click', () => {
+                successAlert.style.display = 'flex';
+                setTimeout(() => {
+                    successAlert.style.display = 'none';
+                }, 5000); // Hide after 5 seconds
+            });
+            document.getElementById('showWarningAlertBtn').addEventListener('click', () => {
+                warningAlert.style.display = 'flex';
+            });
+            
+            // --- Drag & Drop Logic ---
+            const sourceList = document.getElementById('source-list');
+            const targetList = document.getElementById('target-list');
+            let draggedItem = null;
+
+            document.addEventListener('dragstart', (e) => {
+                if (e.target.classList.contains('draggable-item')) {
+                    draggedItem = e.target;
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', e.target.id);
+                    setTimeout(() => {
+                        draggedItem.classList.add('opacity-50');
+                    }, 0);
+                }
+            });
+
+            document.addEventListener('dragend', (e) => {
+                if (draggedItem) {
+                    draggedItem.classList.remove('opacity-50');
+                    draggedItem = null;
+                }
+            });
+
+            document.querySelectorAll('.dropzone').forEach(dropzone => {
+                dropzone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    dropzone.classList.add('hovered');
+                });
+
+                dropzone.addEventListener('dragleave', () => {
+                    dropzone.classList.remove('hovered');
+                });
+
+                dropzone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.remove('hovered');
+                    if (draggedItem) {
+                        // Remove any placeholder text in the drop zone
+                        const placeholder = dropzone.querySelector('p');
+                        if (placeholder) {
+                            placeholder.remove();
+                        }
+                        dropzone.appendChild(draggedItem);
+                    }
+                });
+            });
+
+            // --- Scrolling Logic ---
+            const scrollingContent = document.getElementById('scrolling-content');
+            for (let i = 1; i <= 50; i++) {
+                const item = document.createElement('div');
+                item.className = 'p-2 border-b border-gray-200';
+                item.textContent = `Scroll Item #${i}`;
+                scrollingContent.appendChild(item);
+            }
+
+            // --- Dynamic & Complex Elements Logic ---
+            const loadDynamicContentBtn = document.getElementById('loadDynamicContentBtn');
+            const dynamicContentArea = document.getElementById('dynamicContentArea');
+            const loadingMessage = document.getElementById('loadingMessage');
+            loadDynamicContentBtn.addEventListener('click', () => {
+                // Show loading message
+                loadingMessage.style.display = 'block';
+                // Disable button
+                loadDynamicContentBtn.disabled = true;
+
+                // Simulate an API call with a 3-second delay
+                setTimeout(() => {
+                    const newContent = document.createElement('div');
+                    newContent.innerHTML = `
+                        <p class="text-sm font-medium text-gray-700">This content was loaded dynamically!</p>
+                        <ul class="list-disc list-inside mt-2">
+                            <li>Dynamic List Item 1</li>
+                            <li>Dynamic List Item 2</li>
+                            <li>Dynamic List Item 3</li>
+                        </ul>
+                    `;
+                    dynamicContentArea.innerHTML = '';
+                    dynamicContentArea.appendChild(newContent);
+                    // Re-enable button
+                    loadDynamicContentBtn.disabled = false;
+                }, 3000);
+            });
+
+            // File Upload Logic
+            document.getElementById('file-upload').addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    console.log(`File selected for upload: ${file.name}, Size: ${file.size} bytes, Type: ${file.type}`);
+                    // In a real application, you would handle the file upload here.
+                }
+            });
+
+            // Progress Bar Logic
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                } else {
+                    progress += 10;
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `${progress}%`;
+                }
+            }, 100);
+
+
+            // --- Initial State ---
+            document.addEventListener('DOMContentLoaded', () => {
+                showPage('home');
+                renderTable();
+                updateClock();
+                renderCalendar(); // Initial render of the new date picker
+            });
     </script>
 
-</body>
-</html>
+    </body>
+    </html>
