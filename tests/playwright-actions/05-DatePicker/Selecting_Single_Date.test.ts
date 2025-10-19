@@ -18,7 +18,7 @@ test("Scenario 1: Selecting a Single Date",async({page})=>{
     const targetDate = new Date('2025-10-11T18:30:00.000Z');
     const dataDay = targetDate.toISOString();
     await page.click(`[data-day="${dataDay}"]`);
-    await page.pause()
+    await page.pause() 
 })
 
 
